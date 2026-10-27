@@ -1,0 +1,8 @@
+.env
+*.key
+secrets*
+__pycache__/
+.ipynb_checkpoints/
+*.zip
+churn_ai_risk_list.csv
+churn_ai_batch_scores.csv

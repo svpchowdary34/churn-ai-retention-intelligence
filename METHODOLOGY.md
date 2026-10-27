@@ -1,0 +1,12 @@
+### Methodology
+- **Target and period:** the churn column as supplied. Synthetic demo label = cancelled within 90 days after a 2026-06-30 snapshot. Cancellation dates, post-churn behaviour, historical revenue and lifetime value are never predictors.
+- **Pipeline:** stratified 75/25 split *before* any fitting. Median imputation + scaling (logistic), median imputation (trees), constant imputation + one-hot for categories. Class imbalance via class weights and threshold choice; no resampling of the whole dataset.
+- **Models:** Logistic Regression, Random Forest, Gradient Boosting. The best by 5-fold cross-validated ROC-AUC on training data is wrapped in sigmoid calibration (fitted on training data only).
+- **Threshold:** chosen on cross-validated training predictions by a configurable objective (max F1, max F2, or cost of missed churner vs false alarm). Never fixed at 0.5 and never tuned on the test set.
+- **Customer scores:** out-of-fold calibrated probabilities (no customer is scored by a model that trained on them). New/batch customers use the final model fitted on all labelled data.
+- **Risk categories:** Moderate ≥ observed base rate, High ≥ chosen threshold, Critical ≥ max(60%, High + 15 pts) when 'auto'; otherwise your sliders.
+- **Explainability:** local = what-if replacement of each value by the typical value; global = permutation importance on held-out data. Association only; SHAP is not used.
+- **Priority:** expected net benefit = risk × assumed effectiveness × value − cost, where value = monthly fee × margin × horizon. Missing fees are never zero.
+- **ROI:** exposure = Σ p·V; benefit = Σ p·e·V; net = benefit − cost; ROI = net ÷ cost. Effectiveness values are hypothetical; measure true impact with randomised holdouts.
+- **Limitations:** observational data cannot prove causes or intervention effects; synthetic metrics do not reflect real-world accuracy; fairness checks are partial; outcome monitoring is not implemented.
+- **Privacy:** pseudonymous IDs only; uploads are never saved into the project ZIP; API keys stay in the session; only aggregated tool results (and one customer's computed facts when you name an ID) go to an LLM.

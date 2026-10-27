@@ -1,0 +1,7 @@
+gradio>=4.44,<6
+plotly
+scipy
+scikit-learn>=1.2
+requests
+pandas
+numpy
